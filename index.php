@@ -2,6 +2,7 @@
 include 'db.php';
 $stmt = $pdo->query("SELECT * FROM packages");
 $packages = $stmt->fetchAll();
+session_start();
 ?>
 
 <!DOCTYPE html>
@@ -49,13 +50,20 @@ $packages = $stmt->fetchAll();
 
             <nav id="nav" class="absolute top-0 left-0 z-50 flex-col items-center justify-between hidden w-full h-64 pt-5 mt-24 text-sm text-gray-800 bg-white border-t border-gray-200 md:w-auto md:flex-row md:h-24 lg:text-base md:bg-transparent md:mt-0 md:border-none md:py-0 md:flex md:relative">
                 <a href="#" class="ml-0 mr-0 font-bold duration-100 md:ml-12 md:mr-3 lg:mr-8 transition-color hover:text-indigo-600">Beranda</a>
-                <a href="paket.php" class="mr-0 font-bold duration-100 md:mr-3 lg:mr-8 transition-color hover:text-indigo-600">Order Paket</a>
+                <a href="booking.php" class="mr-0 font-bold duration-100 md:mr-3 lg:mr-8 transition-color hover:text-indigo-600">Order Paket</a>
                 <a href="editpaket.php" class="mr-0 font-bold duration-100 md:mr-3 lg:mr-8 transition-color hover:text-indigo-600">Perbarui Paket</a>
-                <div class="flex flex-col w-full font-medium border-t border-gray-200 md:hidden">
-                    <a href="login.php" class="w-full py-2 font-bold text-center text-pink-500">Masuk</a>
-                    <a href="register.php"
-                        class="relative inline w-full px-5 py-3 text-sm leading-none text-center text-white bg-indigo-700 fold-bold">Daftar</a>
-                </div>
+
+                <?php if (!isset($_SESSION['user_id'])): ?>
+                    <div class="flex flex-col w-full font-medium border-t border-gray-200 md:hidden">
+                        <a href="login.php" class="w-full py-2 font-bold text-center text-pink-500">Masuk</a>
+                        <a href="register.php"
+                            class="relative inline w-full px-5 py-3 text-sm leading-none text-center text-white bg-indigo-700 fold-bold">Daftar</a>
+                    </div>
+                <?php else: ?>
+                    <div class="flex flex-col w-full font-medium border-t border-gray-200 md:hidden">
+                        <a href="logout.php" class="w-full py-2 font-bold text-center text-pink-500">logout</a>
+                    </div>
+                <?php endif; ?>
             </nav>
 
             <div
