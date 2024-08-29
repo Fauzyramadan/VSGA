@@ -13,6 +13,7 @@ session_start();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pariwisata</title>
     <link href="./output.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @media(max-width:1520px) {
@@ -34,12 +35,55 @@ session_start();
             margin-top: 0px;
             background: #a0aec0;
         }
+
+        .video-thumbnail {
+            position: relative;
+            display: inline-block;
+        }
+
+        .video-thumbnail img {
+            display: block;
+            width: 100%;
+            /* Sesuaikan dengan ukuran gambar */
+        }
+
+        .play-icon {
+            position: absolute;
+            top: 30%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 20px;
+            /* Ukuran ikon play */
+            color: white;
+            /* Warna ikon play */
+            background: rgba(0, 0, 0, 0.5);
+            /* Background semi-transparan */
+            border-radius: 100%;
+            /* Membuat background bulat */
+            padding: 10px;
+            /* Jarak antara ikon dan border */
+        }
+
+        .play-icon i {
+            margin: 0;
+            /* Menghilangkan margin default pada ikon */
+        }
     </style>
 </head>
 
 <body class="overflow-x-hidden antialiased">
     <!-- Header Section -->
     <header class="relative z-50 w-full h-24">
+        <?php
+        // Cek apakah ada pesan sukses di session
+        if (isset($_SESSION['success_message'])) {
+            echo '<script type="text/javascript">';
+            echo 'alert("' . $_SESSION['success_message'] . '");';
+            echo '</script>';
+            // Hapus pesan dari session setelah ditampilkan
+            unset($_SESSION['success_message']);
+        }
+        ?>
         <div
             class="container flex items-center justify-center h-full max-w-6xl px-8 mx-auto sm:justify-between xl:px-0">
 
@@ -66,12 +110,17 @@ session_start();
                 <?php endif; ?>
             </nav>
 
-            <div
-                class="absolute left-0 flex-col items-center justify-center hidden w-full pb-8 mt-48 border-b border-gray-200 md:relative md:w-auto md:bg-transparent md:border-none md:mt-0 md:flex-row md:p-0 md:items-end md:flex md:justify-between">
-                <a href="login.php"
-                    class="relative z-40 px-3 py-2 mr-0 text-sm font-bold text-pink-500 md:px-5 lg:text-white sm:mr-3 md:mt-0">Masuk</a>
-                <a href="register.php"
-                    class="relative z-40 inline-block w-auto h-full px-5 py-3 text-sm font-bold leading-none text-white transition duration-300 bg-indigo-700 rounded shadow-md fold-bold lg:bg-white lg:text-indigo-700 sm:w-full lg:shadow-none hover:shadow-xl">Daftar</a>
+            <div class="absolute left-0 flex-col items-center justify-center hidden w-full pb-8 mt-48 border-b border-gray-200 md:relative md:w-auto md:bg-transparent md:border-none md:mt-0 md:flex-row md:p-0 md:items-end md:flex md:justify-between">
+                <?php if (!isset($_SESSION['user_id'])): ?>
+                    <a href="login.php"
+                        class="relative z-40 px-3 py-2 mr-0 text-sm font-bold text-pink-500 md:px-5 lg:text-white sm:mr-3 md:mt-0">Masuk</a>
+                    <a href="register.php"
+                        class="relative z-40 inline-block w-auto h-full px-5 py-3 text-sm font-bold leading-none text-white transition duration-300 bg-indigo-700 rounded shadow-md fold-bold lg:bg-white lg:text-indigo-700 sm:w-full lg:shadow-none hover:shadow-xl">Daftar</a>
+                <?php else: ?>
+                    <div class="flex flex-col w-full font-medium border-t border-gray-200 md:hidden">
+                    </div>
+                    <a href="logout.php" class="relative z-40 inline-block w-auto h-full px-5 py-3 text-sm font-bold leading-none text-white transition duration-300 bg-indigo-700 rounded shadow-md fold-bold lg:bg-white lg:text-indigo-700 sm:w-full lg:shadow-none hover:shadow-xl">Log Out</a>
+                <?php endif; ?>
                 <svg class="absolute top-0 left-0 hidden w-screen max-w-3xl -mt-64 -ml-12 lg:block"
                     viewBox="0 0 818 815" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                     <defs>
@@ -114,12 +163,14 @@ session_start();
                     </g>
                 </svg>
             </div>
+        </div>
+        </div>
 
-            <div id="nav-mobile-btn"
-                class="absolute top-0 right-0 z-50 block w-6 mt-8 mr-10 cursor-pointer select-none md:hidden sm:mt-10">
-                <span class="block w-full h-1 mt-2 duration-200 transform bg-gray-800 rounded-full sm:mt-1"></span>
-                <span class="block w-full h-1 mt-1 duration-200 transform bg-gray-800 rounded-full"></span>
-            </div>
+        <div id="nav-mobile-btn"
+            class="absolute top-0 right-0 z-50 block w-6 mt-8 mr-10 cursor-pointer select-none md:hidden sm:mt-10">
+            <span class="block w-full h-1 mt-2 duration-200 transform bg-gray-800 rounded-full sm:mt-1"></span>
+            <span class="block w-full h-1 mt-1 duration-200 transform bg-gray-800 rounded-full"></span>
+        </div>
 
         </div>
     </header>
@@ -207,7 +258,7 @@ session_start();
                         <p class="text-sm text-gray-600">Ngopi Santai Hingga Bermalam di Villa Dengan Pemandangan Alam
                     </div>
                     <div class="m-2">
-                        <a role="button" href="#" class="text-white bg-purple-600 px-3 py-1 rounded-md hover:bg-purple-700">Daftar Paket</a>
+                        <a role="button" href="booking.php" class="text-white bg-purple-600 px-3 py-1 rounded-md hover:bg-purple-700">Daftar Paket</a>
                     </div>
                 </div>
                 <!-- Card -->
@@ -218,7 +269,7 @@ session_start();
                         <p class="text-sm text-gray-600">Nikmati sunset dan sunrise di sawah yang menakjubkan
                     </div>
                     <div class="m-2">
-                        <a role="button" href="#" class="text-white bg-sky-500 px-3 py-1 rounded-md hover:bg-purple-700">Daftar Paket</a>
+                        <a role="button" href="booking.php" class="text-white bg-sky-500 px-3 py-1 rounded-md hover:bg-purple-700">Daftar Paket</a>
                     </div>
                 </div>
 
@@ -230,7 +281,7 @@ session_start();
                         <p class="text-sm text-gray-600">Segarnya air pegunungan yang jernih, asri dan memanjakan ada disini
                     </div>
                     <div class="m-2">
-                        <a role="button" href="#" class="text-white bg-green-500 px-3 py-1 rounded-md hover:bg-purple-700">Daftar Paket</a>
+                        <a role="button" href="booking.php" class="text-white bg-green-500 px-3 py-1 rounded-md hover:bg-purple-700">Daftar Paket</a>
                     </div>
                 </div>
                 <!-- Card -->
@@ -241,15 +292,64 @@ session_start();
                         <p class="text-sm text-gray-600">Mata air pegunungan dan suasana hutan pinus yang menyejukan
                     </div>
                     <div class="m-2">
-                        <a role="button" href="#" class="text-white bg-yellow-500 px-3 py-1 rounded-md hover:bg-purple-700">Daftar Paket</a>
+                        <a role="button" href="booking.php" class="text-white bg-yellow-500 px-3 py-1 rounded-md hover:bg-purple-700">Daftar Paket</a>
                     </div>
                 </div>
-
-
-
-
+                <!-- Card YouTube -->
+                <h3 class="max-w-2xl px-5 mb-6 text-2xl font-black leading-tight text-center text-gray-900 sm:mt-16 sm:px-0 sm:text-5xl">Lihat review buat ngobatin penasaranmu</h3>
+                <div>
+                    <div class="video-thumbnail w-60 p-2 mt-10 bg-white rounded-xl transform transition-all hover:-translate-y-2 duration-300 shadow-lg hover:shadow-2xl">
+                        <div class="play-icon">
+                            <a href="https://youtu.be/nLQ24vWGRG8?feature=shared" target="_blank" class="block">
+                                <i class="fa fa-play"></i> <!-- Menggunakan FontAwesome -->
+                            </a>
+                        </div>
+                        <img class="h-40 object-cover rounded-xl" src="https://img.youtube.com/vi/nLQ24vWGRG8/mqdefault.jpg" alt="YouTube Video Thumbnail">
+                        <div class="p-2">
+                            <h2 class="font-semibold text-lg">Tonton Keseruan di</h2>
+                            <h1 class="font-bold text-2xl mb-2">Ciboerpass</h1>
+                        </div>
+                    </div>
+                    <div class="video-thumbnail w-60 p-2 mt-10 bg-white rounded-xl transform transition-all hover:-translate-y-2 duration-300 shadow-lg hover:shadow-2xl">
+                        <div class="play-icon">
+                            <a href="https://youtu.be/0m1sKqUFSMQ?feature=shared" target="_blank" class="block">
+                                <i class="fa fa-play"></i> <!-- Menggunakan FontAwesome -->
+                            </a>
+                        </div>
+                        <img class="h-40 object-cover rounded-xl" src="https://img.youtube.com/vi/0m1sKqUFSMQ/mqdefault.jpg" alt="YouTube Video Thumbnail">
+                        <div class="p-2">
+                            <h2 class="font-semibold text-lg">Tonton Keseruan di</h2>
+                            <h1 class="font-bold text-2xl mb-2">Panyaweuyan</h1>
+                        </div>
+                    </div>
+                    <div class="video-thumbnail w-60 p-2 mt-10 bg-white rounded-xl transform transition-all hover:-translate-y-2 duration-300 shadow-lg hover:shadow-2xl">
+                        <div class="play-icon">
+                            <a href="https://youtu.be/HepVRof4t3E?feature=shared" target="_blank" class="block">
+                                <i class="fa fa-play"></i> <!-- Menggunakan FontAwesome -->
+                            </a>
+                        </div>
+                        <img class="h-40 object-cover rounded-xl" src="https://img.youtube.com/vi/HepVRof4t3E/mqdefault.jpg" alt="YouTube Video Thumbnail">
+                        <div class="p-2">
+                            <h2 class="font-semibold text-lg">Tonton Keseruan di</h2>
+                            <h1 class="font-bold text-2xl mb-2">Situ Cipanten</h1>
+                        </div>
+                    </div>
+                    <div class="video-thumbnail w-60 p-2 mt-10 bg-white rounded-xl transform transition-all hover:-translate-y-2 duration-300 shadow-lg hover:shadow-2xl">
+                        <div class="play-icon">
+                            <a href="https://youtu.be/53t7OQ3KM4s?feature=shared" target="_blank" class="block">
+                                <i class="fa fa-play"></i> <!-- Menggunakan FontAwesome -->
+                            </a>
+                        </div>
+                        <img class="h-40 object-cover rounded-xl" src="https://img.youtube.com/vi/53t7OQ3KM4s/mqdefault.jpg" alt="YouTube Video Thumbnail">
+                        <div class="p-2">
+                            <h2 class="font-semibold text-lg">Tonton Keseruan di</h2>
+                            <h1 class="font-bold text-2xl mb-2">Curug Cipeuteuy</h1>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
+    </div>
     </div>
     <!-- END FEATURES SECTION -->
 
